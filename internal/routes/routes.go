@@ -26,12 +26,13 @@ func Register(r *gin.Engine, db *gorm.DB, jwtSecret []byte, basicUser, basicPass
 		api.POST("/auth/register", auth.Register)
 		api.POST("/auth/login", auth.Login) // JWT
 
+		// tanpa login
 		api.GET("/contents", content.List)
 		api.GET("/contents/:id", content.Get) // by id atau slug
 		api.GET("/categories", cat.List)
 		api.GET("/tribes", tax.ListTribe)
 		api.GET("/regions", tax.ListRegion)
-		api.GET("/about", about.Get)
+		api.GET("/abouts", about.Get)
 	}
 
 	// Admin via Basic Auth (sesuai brief)
@@ -40,7 +41,7 @@ func Register(r *gin.Engine, db *gorm.DB, jwtSecret []byte, basicUser, basicPass
 		admin.POST("/categories", cat.Create)
 		admin.POST("/tribes", tax.CreateTribe)
 		admin.POST("/regions", tax.CreateRegion)
-		admin.POST("/about", about.Upsert)
+		admin.POST("/abouts", about.Upsert)
 		admin.POST("/contents", content.Create)
 	}
 
