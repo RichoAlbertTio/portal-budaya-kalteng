@@ -1,10 +1,8 @@
 package config
 
-
 import (
-"log"
-"os"
-"strconv"
+	"os"
+	"strconv"
 )
 
 
@@ -42,6 +40,8 @@ DBSSLMode: get("DB_SSLMODE", "disable"),
 
 
 func get(key, fallback string) string {
-if v := os.Getenv(key); v != "" { return v }
-return fallback
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
 }

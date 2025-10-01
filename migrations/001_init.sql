@@ -1,7 +1,16 @@
+-- Enable UUID extension
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-bio TEXT,
-created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+-- USERS
+CREATE TABLE IF NOT EXISTS users (
+	id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+	username VARCHAR(50) UNIQUE NOT NULL,
+	password_hash VARCHAR(255) NOT NULL,
+	full_name VARCHAR(100),
+	role VARCHAR(20) NOT NULL DEFAULT 'admin', -- admin|superadmin
+	bio TEXT,
+	created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+	updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
 

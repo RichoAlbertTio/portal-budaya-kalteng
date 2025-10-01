@@ -1,13 +1,14 @@
 // internal/handlers/taxonomy_handler.go (tribes/regions ringkas)
 package handlers
 
-
 import (
-"net/http"
-"github.com/gin-gonic/gin"
-"gorm.io/gorm"
-"portal-budaya-kalteng/internal/models"
-"portal-budaya-kalteng/internal/util"
+	"net/http"
+
+	"portal-budaya/internal/models"
+	"portal-budaya/internal/util"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 

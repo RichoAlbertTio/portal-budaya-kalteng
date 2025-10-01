@@ -1,18 +1,15 @@
 // internal/handlers/content_handler.go
 package handlers
 
-
 import (
-"net/http"
+	"net/http"
 
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 
-"github.com/gin-gonic/gin"
-"gorm.io/gorm"
-
-
-"portal-budaya-kalteng/internal/dto"
-"portal-budaya-kalteng/internal/models"
-"portal-budaya-kalteng/internal/util"
+	"portal-budaya/internal/dto"
+	"portal-budaya/internal/models"
+	"portal-budaya/internal/util"
 )
 
 

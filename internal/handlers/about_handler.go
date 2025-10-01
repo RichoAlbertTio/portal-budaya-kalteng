@@ -1,12 +1,13 @@
 // internal/handlers/about_handler.go
 package handlers
 
-
 import (
-"net/http"
-"github.com/gin-gonic/gin"
-"gorm.io/gorm"
-"portal-budaya-kalteng/internal/models"
+	"net/http"
+
+	"portal-budaya/internal/models"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 

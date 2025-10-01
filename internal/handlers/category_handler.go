@@ -1,17 +1,14 @@
 // internal/handlers/category_handler.go
 package handlers
 
-
 import (
-"net/http"
+	"net/http"
 
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 
-"github.com/gin-gonic/gin"
-"gorm.io/gorm"
-
-
-"portal-budaya-kalteng/internal/models"
-"portal-budaya-kalteng/internal/util"
+	"portal-budaya/internal/models"
+	"portal-budaya/internal/util"
 )
 
 
