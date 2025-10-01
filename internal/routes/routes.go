@@ -29,19 +29,19 @@ func Register(r *gin.Engine, db *gorm.DB, jwtSecret []byte, basicUser, basicPass
 
 		// Contents - Public Read
 		api.GET("/contents", content.List)
-		api.GET("/contents/:id", content.Get)
+		api.GET("/contents/:slug", content.Get)
 
 		// Categories - Public Read
 		api.GET("/categories", cat.List)
-		api.GET("/categories/:id", cat.Get)
+		api.GET("/categories/:slug", cat.Get)
 
 		// Tribes - Public Read
 		api.GET("/tribes", tax.ListTribe)
-		api.GET("/tribes/:id", tax.GetTribe)
+		api.GET("/tribes/:slug", tax.GetTribe)
 
 		// Regions - Public Read
 		api.GET("/regions", tax.ListRegion)
-		api.GET("/regions/:id", tax.GetRegion)
+		api.GET("/regions/:slug", tax.GetRegion)
 
 		// About - Public Read
 		api.GET("/abouts", about.Get)

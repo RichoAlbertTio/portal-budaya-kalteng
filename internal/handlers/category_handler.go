@@ -3,6 +3,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -37,12 +38,23 @@ func (h *CategoryHandler) List(c *gin.Context) {
 }
 
 func (h *CategoryHandler) Get(c *gin.Context) {
-	id := c.Param("id")
+	slug := c.Param("slug")
 	var cat models.Category
-	if err := h.DB.Where("id = ? OR slug = ?", id, id).First(&cat).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "category not found"})
-		return
+	
+	// Try slug first, then UUID if it looks like one
+	if err := h.DB.Where("slug = ?", slug).First(&cat).Error; err != nil {
+		// If not found by slug, try by UUID (only if it looks like a UUID)
+		if len(slug) == 36 && strings.Contains(slug, "-") {
+			if err2 := h.DB.Where("id = ?", slug).First(&cat).Error; err2 != nil {
+				c.JSON(http.StatusNotFound, gin.H{"error": "category not found"})
+				return
+			}
+		} else {
+			c.JSON(http.StatusNotFound, gin.H{"error": "category not found"})
+			return
+		}
 	}
+	
 	c.JSON(http.StatusOK, cat)
 }
 

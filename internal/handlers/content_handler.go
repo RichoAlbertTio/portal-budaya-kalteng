@@ -3,6 +3,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -56,12 +57,23 @@ func (h *ContentHandler) Create(c *gin.Context) {
 }
 
 func (h *ContentHandler) Get(c *gin.Context) {
-	id := c.Param("id")
+	slug := c.Param("slug")
 	var content models.Content
-	if err := h.DB.Preload("Category").Preload("Tribes").Preload("Regions").First(&content, "id = ? OR slug = ?", id, id).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "content not found"})
-		return
+	
+	// Try slug first, then UUID if it looks like one
+	if err := h.DB.Preload("Category").Preload("Tribes").Preload("Regions").Where("slug = ?", slug).First(&content).Error; err != nil {
+		// If not found by slug, try by UUID (only if it looks like a UUID)
+		if len(slug) == 36 && strings.Contains(slug, "-") {
+			if err2 := h.DB.Preload("Category").Preload("Tribes").Preload("Regions").Where("id = ?", slug).First(&content).Error; err2 != nil {
+				c.JSON(http.StatusNotFound, gin.H{"error": "content not found"})
+				return
+			}
+		} else {
+			c.JSON(http.StatusNotFound, gin.H{"error": "content not found"})
+			return
+		}
 	}
+	
 	c.JSON(http.StatusOK, content)
 }
 

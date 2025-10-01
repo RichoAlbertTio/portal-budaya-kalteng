@@ -3,6 +3,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	"portal-budaya/internal/models"
 	"portal-budaya/internal/util"
@@ -49,12 +50,23 @@ func (h *TaxHandler) ListTribe(c *gin.Context) {
 }
 
 func (h *TaxHandler) GetTribe(c *gin.Context) {
-	id := c.Param("id")
+	slug := c.Param("slug")
 	var tribe models.Tribe
-	if err := h.DB.Where("id = ? OR slug = ?", id, id).First(&tribe).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "tribe not found"})
-		return
+	
+	// Try slug first, then UUID if it looks like one
+	if err := h.DB.Where("slug = ?", slug).First(&tribe).Error; err != nil {
+		// If not found by slug, try by UUID (only if it looks like a UUID)
+		if len(slug) == 36 && strings.Contains(slug, "-") {
+			if err2 := h.DB.Where("id = ?", slug).First(&tribe).Error; err2 != nil {
+				c.JSON(http.StatusNotFound, gin.H{"error": "tribe not found"})
+				return
+			}
+		} else {
+			c.JSON(http.StatusNotFound, gin.H{"error": "tribe not found"})
+			return
+		}
 	}
+	
 	c.JSON(http.StatusOK, tribe)
 }
 
@@ -139,12 +151,23 @@ func (h *TaxHandler) ListRegion(c *gin.Context) {
 }
 
 func (h *TaxHandler) GetRegion(c *gin.Context) {
-	id := c.Param("id")
+	slug := c.Param("slug")
 	var region models.Region
-	if err := h.DB.Where("id = ? OR slug = ?", id, id).First(&region).Error; err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "region not found"})
-		return
+	
+	// Try slug first, then UUID if it looks like one
+	if err := h.DB.Where("slug = ?", slug).First(&region).Error; err != nil {
+		// If not found by slug, try by UUID (only if it looks like a UUID)
+		if len(slug) == 36 && strings.Contains(slug, "-") {
+			if err2 := h.DB.Where("id = ?", slug).First(&region).Error; err2 != nil {
+				c.JSON(http.StatusNotFound, gin.H{"error": "region not found"})
+				return
+			}
+		} else {
+			c.JSON(http.StatusNotFound, gin.H{"error": "region not found"})
+			return
+		}
 	}
+	
 	c.JSON(http.StatusOK, region)
 }
 
