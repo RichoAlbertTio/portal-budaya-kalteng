@@ -20,34 +20,65 @@ func Register(r *gin.Engine, db *gorm.DB, jwtSecret []byte, basicUser, basicPass
 	tax := &handlers.TaxHandler{DB: db}
 	about := &handlers.AboutHandler{DB: db}
 
-	// Public
+	// Public API - Read Only
 	api := r.Group("/api")
 	{
+		// Authentication
 		api.POST("/auth/register", auth.Register)
-		api.POST("/auth/login", auth.Login) // JWT
+		api.POST("/auth/login", auth.Login)
 
-		// tanpa login
+		// Contents - Public Read
 		api.GET("/contents", content.List)
-		api.GET("/contents/:id", content.Get) // by id atau slug
+		api.GET("/contents/:id", content.Get)
+
+		// Categories - Public Read
 		api.GET("/categories", cat.List)
+		api.GET("/categories/:id", cat.Get)
+
+		// Tribes - Public Read
 		api.GET("/tribes", tax.ListTribe)
+		api.GET("/tribes/:id", tax.GetTribe)
+
+		// Regions - Public Read
 		api.GET("/regions", tax.ListRegion)
+		api.GET("/regions/:id", tax.GetRegion)
+
+		// About - Public Read
 		api.GET("/abouts", about.Get)
 	}
 
-	// Admin via Basic Auth (sesuai brief)
+	// Admin API - Full CRUD (Basic Auth Required)
 	admin := r.Group("/api/admin", middlware.BasicAuth(middlware.BasicConfig{Username: basicUser, Password: basicPass}))
 	{
+		// Categories CRUD
 		admin.POST("/categories", cat.Create)
+		admin.PUT("/categories/:id", cat.Update)
+		admin.DELETE("/categories/:id", cat.Delete)
+
+		// Tribes CRUD
 		admin.POST("/tribes", tax.CreateTribe)
+		admin.PUT("/tribes/:id", tax.UpdateTribe)
+		admin.DELETE("/tribes/:id", tax.DeleteTribe)
+
+		// Regions CRUD
 		admin.POST("/regions", tax.CreateRegion)
-		admin.POST("/abouts", about.Upsert)
+		admin.PUT("/regions/:id", tax.UpdateRegion)
+		admin.DELETE("/regions/:id", tax.DeleteRegion)
+
+		// Contents CRUD
 		admin.POST("/contents", content.Create)
+		admin.PUT("/contents/:id", content.Update)
+		admin.DELETE("/contents/:id", content.Delete)
+
+		// About Upsert
+		admin.POST("/abouts", about.Upsert)
 	}
 
-	// Contoh: area yang butuh JWT (nilai plus)
+	// Protected API - JWT Required
 	jwt := r.Group("/api/me", middlware.JWTAuth(middlware.JWTConfig{Secret: jwtSecret}))
 	{
-		jwt.GET("/profile", func(c *gin.Context) { c.JSON(200, gin.H{"message": "ok"}) })
+		jwt.GET("/profile", func(c *gin.Context) {
+			c.JSON(200, gin.H{"message": "ok"})
+		})
 	}
 }
