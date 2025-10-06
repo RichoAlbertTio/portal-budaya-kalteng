@@ -1,12 +1,11 @@
 // internal/models/content.go
 package models
 
-
 import "time"
 
 
 type Content struct {
-ID string `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+ID string `gorm:"type:uuid;primaryKey" json:"id"`
 Title string `gorm:"size:180" json:"title"`
 Slug string `gorm:"uniqueIndex;size:200" json:"slug"`
 ImageURL *string `json:"image_url"`

@@ -33,6 +33,11 @@ func main() {
 		log.Fatal("Database connection not initialized")
 	}
 
+	// Try to enable extension (harmless if already exists)
+	if err := db.DB.Exec(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`).Error; err != nil {
+		log.Println("warn: unable to ensure uuid-ossp extension:", err)
+	}
+
 	if cfg.AppEnv != "production" {
 		if err := db.AutoMigrate(&models.User{}, &models.Category{}, &models.Tribe{}, &models.Region{}, &models.About{}, &models.Content{}); err != nil {
 			log.Fatal("AutoMigrate failed:", err)

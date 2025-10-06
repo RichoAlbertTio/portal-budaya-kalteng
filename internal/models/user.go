@@ -1,11 +1,10 @@
 package models
 
-
 import "time"
 
 
 type User struct {
-ID string `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+ID string `gorm:"type:uuid;primaryKey" json:"id"`
 Username string `gorm:"uniqueIndex;size:50" json:"username"`
 Email string `gorm:"uniqueIndex;size:120" json:"email"`
 DisplayName string `gorm:"size:120" json:"display_name"`

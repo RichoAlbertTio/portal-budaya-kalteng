@@ -4,7 +4,7 @@ package models
 import "time"
 
 type Category struct {
-	ID          string    `gorm:"type:uuid;default:uuid_generate_v4();primaryKey" json:"id"`
+	ID          string    `gorm:"type:uuid;primaryKey" json:"id"`
 	Name        string    `gorm:"uniqueIndex;size:80" json:"name"`
 	Slug        string    `gorm:"uniqueIndex;size:100" json:"slug"`
 	Description *string   `json:"description,omitempty"`
