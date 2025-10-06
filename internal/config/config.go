@@ -30,9 +30,11 @@ func Load() Config {
 
 	databaseURL := os.Getenv("DATABASE_URL")
 
-	// ONLY use what is explicitly set in env (PORT or APP_PORT). No hardcoded fallback.
+	// Strict: only use PORT from env for HTTP listen. If empty -> fatal.
 	appPort := os.Getenv("PORT")
-	if appPort == "" { appPort = os.Getenv("APP_PORT") }
+	if appPort == "" {
+		log.Fatal("Environment variable PORT must be set (Railway provides this; set manually if running locally)")
+	}
 
 	if databaseURL != "" {
 		dbConfig := parseDatabaseURL(databaseURL)

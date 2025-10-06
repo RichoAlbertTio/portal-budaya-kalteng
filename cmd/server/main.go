@@ -3,6 +3,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"portal-budaya/internal/config"
 	"portal-budaya/internal/database"
@@ -14,7 +15,10 @@ import (
 )
 
 func main() {
-	_ = godotenv.Load()
+	// Only load .env when not in production to avoid clobbering Railway env
+	if os.Getenv("APP_ENV") != "production" {
+		_ = godotenv.Load()
+	}
 	cfg := config.Load()
 
 	var db *database.DB
@@ -22,14 +26,13 @@ func main() {
 		log.Println("Using DATABASE_URL connection mode")
 		db = database.ConnectWithURL(cfg.DatabaseURL)
 	} else {
-		log.Println("Using individual DB_* variables connection mode")
+		log.Println("Using PG* variables connection mode")
 		db = database.Connect(cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPass, cfg.DBName, cfg.DBSSLMode)
 	}
 	if db == nil {
 		log.Fatal("Database connection not initialized")
 	}
 
-	// auto-migrate only in non-production
 	if cfg.AppEnv != "production" {
 		if err := db.AutoMigrate(&models.User{}, &models.Category{}, &models.Tribe{}, &models.Region{}, &models.About{}, &models.Content{}); err != nil {
 			log.Fatal("AutoMigrate failed:", err)
