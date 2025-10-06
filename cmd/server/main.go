@@ -18,7 +18,15 @@ func main() {
 	_ = godotenv.Load()
 	cfg := config.Load()
 
-	db := database.Connect(cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPass, cfg.DBName, cfg.DBSSLMode)
+	var db *database.DB
+	if cfg.DatabaseURL != "" {
+		// Use DATABASE_URL (Railway style)
+		db = database.ConnectWithURL(cfg.DatabaseURL)
+	} else {
+		// Use individual DB config parameters
+		db = database.Connect(cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPass, cfg.DBName, cfg.DBSSLMode)
+	}
+	
 	// auto-migrate (aman untuk development)
 	db.AutoMigrate(&models.User{}, &models.Category{}, &models.Tribe{}, &models.Region{}, &models.About{}, &models.Content{})
 
