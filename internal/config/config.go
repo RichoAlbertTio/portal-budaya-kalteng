@@ -30,11 +30,9 @@ func Load() Config {
 
 	databaseURL := os.Getenv("DATABASE_URL")
 
-	// Strict: only use PORT from env for HTTP listen. If empty -> fatal.
+	// Use PORT from env; fallback to 8080 if not set (so container still responds)
 	appPort := os.Getenv("PORT")
-	if appPort == "" {
-		log.Fatal("Environment variable PORT must be set (Railway provides this; set manually if running locally)")
-	}
+	if appPort == "" { appPort = "8080" }
 
 	if databaseURL != "" {
 		dbConfig := parseDatabaseURL(databaseURL)
